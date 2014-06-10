@@ -1,0 +1,18 @@
+{
+  "name": "econbuild",
+  "version": "0.0.1",
+  "description": "Handy tool for building, testing and releasing iOS projects",
+  "main": "commandline.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "econbuild": "./command.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.2.0",
+    "shelljs": "^0.3.0"
+  }
+}
