@@ -13,6 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^2.2.0",
+    "request": "^2.36.0",
     "shelljs": "^0.3.0"
   }
 }
