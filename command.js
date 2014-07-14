@@ -31,19 +31,23 @@ program
   });
 
 program
-  .command('build')
+  .command('buildPR')
   .option("-n, --name [name]", "App name")
   .option("-w, --workspace [workspace]", "Path to workspace")
   .option("-s, --scheme [scheme]", "Name of Scheme")
+  .option("-c, --configuration [configuration]", "Configuration")
   .option("-d, --debug", "Enable more logging")
   .option("-t, --githubToken [token]", "Github Token")
   .option("-r, --githubRepo [repo]", "Github Repo (github/hub)")
   .option("-b, --branch [branch]", "Branch used")
-  .option("-p, --provisionProfile [provision]", "Provisioning profile")
-  .option("-c, --hockeyToken [hockeyToken]", "Hockey App Token")
+  .option("-p, --provisioningProfile [provisioningProfile]", "Provisioning profile")
+  .option("-k, --hockeyToken [hockeyToken]", "HockeyApp Token")
   .option("-a, --signing [signing]", "Signing authory")
+  .option("-g, --gitRef [gitRef]", "Git reference")
+  .option("-i, --buildDir [buildDir]", "Build Dir")
 
-  .description('build ios project')
+
+  .description('build pull-request with comment and push to hockeyApp')
   .action(function(env, options) {
     var econ = new Econ({
       appName: env.name,
@@ -53,10 +57,14 @@ program
       githubToken: env.githubToken,
       githubRepo: env.githubRepo,
       branch: env.branch,
-      provision: env.provisionProfile,
+      provision: env.provisioningProfile,
       hockeyToken: env.hockeyToken,
-      signing: env.signing
+      signing: env.signing,
+      configuration: env.configuration,
+      buildDir: env.buildDir,
+      gitRef: env.gitRef
     });
+
     econ.changeVersionToPR();
     econ.xcodeBuild();
     econ.xcodeSign();

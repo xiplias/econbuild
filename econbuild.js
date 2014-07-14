@@ -6,6 +6,8 @@ module.exports = EconBuild;
 function EconBuild (options) {
   this.options = options || {};
 
+  console.log(options);
+
   if (!this.options.workspace) this.options.workspace = this.options.appName + ".xcworkspace/";
   if (!this.options.scheme) this.options.scheme = this.options.appName;
 
@@ -18,7 +20,7 @@ function EconBuild (options) {
     }
   }
 
-  this.rootPath = '/Users/xiplias/Projects/Champion';
+  this.rootPath = this.options.buildDir;
 }
 
 EconBuild.prototype.xcodeBuild = function () {
@@ -30,7 +32,9 @@ EconBuild.prototype.xcodeBuild = function () {
     exit(1);
   }
 
-  var command = 'xctool -workspace ' + options.workspace + ' -scheme ' + options.scheme + ' clean archive -archivePath ./build';
+  var configuration = options.configuration ? ' -configuration '+options.configuration : '';
+
+  var command = 'xctool -workspace ' + options.workspace + ' -scheme ' + options.scheme + configuration + ' clean archive -archivePath '+this.rootPath+"build";
 
   // Output
   echo('##teamcity[compilationStarted compiler=\'xcodebuild\']');
@@ -47,7 +51,7 @@ EconBuild.prototype.xcodeBuild = function () {
 };
 
 EconBuild.prototype.xcodeSign = function () {
-  var applicationPath = this.rootPath + '/build.xcarchive/Products/Applications/'+this.options.appName+'.app';
+  var applicationPath = this.rootPath + 'build.xcarchive/Products/Applications/'+this.options.appName+'.app';
   var ipaPath = this.rootPath + '/app.ipa';
 
   var command = 'xcrun -log -sdk iphoneos PackageApplication "' + applicationPath + '" -o ' +ipaPath+ ' -sign "'+ this.options.signing +'" -embed "' + this.options.provision + '"';
@@ -152,8 +156,8 @@ EconBuild.prototype.xcodeTest = function () {
 };
 
 EconBuild.prototype.changeVersionToPR = function () {
-
-  var command = 'agvtool new-marketing-version PR-'+this.prNumber || "master";
+  var gitRef = this.options.gitRef ? "-"+this.options.gitRef : "";
+  var command = 'agvtool new-marketing-version PR-'+this.prNumber+gitRef;
 
   var execCommand = exec(command, {
     silent: false
