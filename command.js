@@ -32,6 +32,7 @@ program
 
 program
   .command('buildPR')
+  .option("-q, --skip-building", "Skip Building")
   .option("-n, --name [name]", "App name")
   .option("-w, --workspace [workspace]", "Path to workspace")
   .option("-s, --scheme [scheme]", "Name of Scheme")
@@ -65,8 +66,10 @@ program
       gitRef: env.gitRef
     });
 
+
     econ.changeVersionToPR();
-    econ.xcodeBuild();
+
+    if (!env.skipBuilding) econ.xcodeBuild();
     econ.xcodeSign();
     econ.zipdSYM();
     econ.uploadToHockeyApp();
