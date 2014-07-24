@@ -87,13 +87,14 @@ EconBuild.prototype.uploadToHockeyApp = function () {
   var pathTodSYM  = this.rootPath + '/app.dSYM.zip';
   var hockeyUrl   = 'https://rink.hockeyapp.net/api/2/apps/upload';
 
+
   var command = 'curl -s -F \'status=2\' -F \'notify=0\' -F \'release_type=2\' -F \'notes=github.com/repos/'+this.options.githubRepo+'/issues/'+this.prNumber+'\' -F \'notes_type=0\' -F \'ipa=@'+pathToIpa +'\' -F \'dsym=@'+ pathTodSYM +'\' -H \'X-HockeyAppToken:'+ this.options.hockeyToken + '\' '+hockeyUrl;
 
   if(this.options.debug) echo('Running command: '+command);
 
   var exe = exec(command, { silent: false });
 
-  this.downloadUrl = JSON.parse(exe.output).public_url;
+  this.downloadUrl = JSON.parse(exe.output).config_url;
 
   if (exe.code !== 0) {
     echo('##teamcity[message text=\'dSYM compress error\' status=\'ERROR\']');
